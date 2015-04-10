@@ -1,0 +1,22 @@
+# ignore node.js packages
+node_modules
+
+#ignore target folder
+target/
+
+# ignore build
+build/
+
+#ignore deployment folder
+client/deployment/
+
+#coverage folders
+coverage/
+
+#ignore zip files
+*.zip
+
+#sass-cache
+.sass-cache/
+
+*.log
