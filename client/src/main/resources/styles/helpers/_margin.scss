@@ -1,0 +1,43 @@
+$common-margins: (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 40, 50);
+
+@each $n in $common-margins {
+  .margin-#{$n}-px {
+    margin: #{$n}px;
+  }
+  .margin-top-#{$n}-px {
+    margin-top: #{$n}px;
+  }
+  .margin-right-#{$n}-px {
+    margin-right: #{$n}px;
+  }
+  .margin-left-#{$n}-px {
+    margin: #{$n}px;
+  }
+  .margin-bottom-#{$n}-px {
+    margin-bottom: #{$n}px;
+  }
+}
+
+.no-margin {
+  margin: 0;
+}
+
+.no-margin-top {
+  margin-top: 0;
+}
+
+.no-margin-right {
+  margin-right: 0;
+}
+
+.no-margin-bottom {
+  margin-bottom: 0;
+}
+
+.no-margin-left {
+  margin-left: 0;
+}
+
+.clear {
+  clear: both;
+}
