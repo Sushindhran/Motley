@@ -6,7 +6,8 @@
   "readmeFilename": "README.md",
   "dependencies": {
     "grunt": "0.4.5",
-    "grunt-cli": "0.1.13"
+    "grunt-cli": "0.1.13",
+    "lodash": "3.6.0"
   },
 
   "devDependencies": {
@@ -27,8 +28,9 @@
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "1.10.1",
     "multer": "0.1.7",
-    "mta-turnstiles": "1.0.1",
-  	"thrift-hive": "0.0.7"
+    "mta-turnstiles": "git+ssh://git@github.com:tmrudick/mta-turnstiles.git#c2e86e4800f6da82f6a4762e5ef08072e25da7b0",
+    "hbase": "0.2.0",
+    "webhdfs": "0.1.12"
   },
 
   "scripts": {
