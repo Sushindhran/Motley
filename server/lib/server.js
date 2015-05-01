@@ -10,9 +10,6 @@ var path = require('path'),
 	db = require('./db/scripts/db'),
 	middleware = require('./config/express/express-middleware'),
 	routes = require('./config/express/express-routes'),
-	loginRoute = require('./routes/route-user'),
-	passport = require('passport/'),
-	s3 = require('s3'),
 	s3Client,
 	server,
 	log;
@@ -55,7 +52,6 @@ async.series([
 		done();
 	},
 	function(done) {
-		log = require('./utils/common-utils').getLogger();
 		settings.log = log;
 		done();
 	},
@@ -66,12 +62,6 @@ async.series([
         loginRoute.initPassport(passport);
         done();
     },
-	function(done){
-		process.env.AWS_ACCESS_KEY_ID=settings.getConfig().s3.s3Options.accessKeyId;
-		process.env.AWS_SECRET_ACCESS_KEY=settings.getConfig().s3.s3Options.secretAccessKey;
-		s3Client = s3.createClient(settings.getConfig().s3);
-		done();
-	},
     function(done) {
         middleware(app, router, passport);
         done();
