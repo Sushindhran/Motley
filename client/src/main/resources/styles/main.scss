@@ -11,3 +11,58 @@ body {
   background-color: #ccc;
   height: 100%;
 }
+
+.select {
+  height: 35px;
+}
+
+.map {
+  border: solid #000000 2px;
+}
+
+.date-picker-wrapper {
+  input {
+    height: 35px;
+  }
+}
+
+.date-picker {
+  z-index: 10;
+  position: absolute;
+  background-color: white;
+  margin-top: 20px;
+  border:solid #000000 2px;
+  width: 250px;
+  table {
+    margin-left: 20px;
+  }
+}
+
+.input-mode {
+  z-index: 10;
+}
+
+.previous-month {
+  float: left;
+}
+
+.month-label {
+  text-align: justify;
+}
+
+.next-month {
+  float: left;
+}
+
+.days {
+  width: 200px;
+}
+
+.time-picker {
+  padding-left: 20px;
+  width: 230px;
+}
+
+.row {
+  padding-top: 50px;
+}

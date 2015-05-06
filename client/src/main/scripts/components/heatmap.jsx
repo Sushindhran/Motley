@@ -1,4 +1,7 @@
 var React = require('react');
+var Reflux = require('reflux');
+
+var storeMap = require('../stores/store-map');
 
 var heatmapjs = require('../script-loader/heatmapjs');
 var ReactScriptLoaderModule = require('../script-loader/ReactScriptLoader.js');
@@ -18,7 +21,19 @@ window.initializeMaps = function() {
 };
 
 var HeatMap = React.createClass({
-	mixins: [ReactScriptLoaderMixin],
+	mixins: [
+		ReactScriptLoaderMixin,
+		Reflux.listenTo(storeMap, 'onNewData')
+	],
+
+	getDefaultProps: function() {
+		return {
+			data: {
+				max: 0,
+				data: []
+			}
+		}
+	},
 
 	getInitialState: function() {
 		return {
@@ -27,6 +42,11 @@ var HeatMap = React.createClass({
 				data: []
 			}
 		}
+	},
+
+	onNewData: function() {
+		console.log('newData', storeMap.getData());
+		this.onScriptLoaded(storeMap.getData());
 	},
 
 	getScriptURL: function() {
@@ -44,18 +64,7 @@ var HeatMap = React.createClass({
 		// Show the user an error message.
 	},
 
-	componentWillReceiveProps: function(newProps) {
-		console.log('new props',newProps);
-		this.onScriptLoaded(newProps);
-	},
-
 	onScriptLoaded: function(newProps) {
-		var data = this.state.data;
-
-		if(newProps != null) {
-			data = newProps.data;
-		}
-
 		heatmapjs._heatmapjs();
 
 		function HeatmapOverlay(map, cfg) {
@@ -317,7 +326,7 @@ var HeatMap = React.createClass({
 
 		// Render a map with the center point given by the component's lat and lng
 		// properties.
-		var myLatlng = new google.maps.LatLng(40.748817, -73.985428);
+		var myLatlng = new google.maps.LatLng(40.718817, -73.865428);
 		var mapOptions = {
 			zoom: 12,
 			center: myLatlng,
@@ -352,12 +361,12 @@ var HeatMap = React.createClass({
 			}
 		);
 
-		heatmap.setData(data);
+		heatmap.setData(newProps);
 	},
 
 	render: function() {
 		var styles = {
-			height: '100%'
+			height: '95%'
 		};
 		return (
 			<div ref="canvas" style={styles}></div>

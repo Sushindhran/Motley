@@ -2,6 +2,16 @@ var LineChart = require("react-chartjs").Line;
 var React = require('react');
 
 var LC = React.createClass({
+	getInitialState: function() {
+		return {
+			station: ''
+		};
+	},
+
+	componentWillMount: function() {
+
+	},
+
 	render: function() {
 		var data = {
 			labels: ["January", "February", "March", "April", "May", "June", "July"],
@@ -79,7 +89,9 @@ var LC = React.createClass({
 		};
 
 		return (
-			<LineChart data={data} options={options} width="600" height="250"/>
+			<div className="container-fluid">
+				<LineChart data={data} options={options} width="600" height="250"/>
+			</div>
 		);
 	}
 });

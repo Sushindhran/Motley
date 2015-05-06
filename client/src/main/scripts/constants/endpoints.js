@@ -10,5 +10,11 @@ module.exports = {
 	},
 	TRAIN_USAGE: {
 		URL: '/api/turnstile/:date/:time'
+	},
+	STATIONS: {
+		URL: '/api/stations'
+	},
+	ANALYTICS: {
+		URL: '/api/station/:station/monthlyAv'
 	}
 };
