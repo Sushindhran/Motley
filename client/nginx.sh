@@ -10,10 +10,10 @@ if [ -d "$DIRECTORY" ]; then
 fi
 
 # Stop nginx
-sudo pkill nginx;
+sudo kill nginx;
 
 # Create Symlink
-ln -s `pwd`/ /tmp/House-Hunting-Application;
+ln -s `pwd`/target/ /tmp/House-Hunting-Application;
 
 # start nginx
 sudo nginx -c `pwd`/nginx.conf;

@@ -3,27 +3,28 @@
 var React = require('react');
 var Router = require('react-router');
 
-var Route = Router.Route,
-	RouterHandler = Router.RouteHandler,
-	DefaultRoute = Router.DefaultRoute;
+var Route = Router.Route;
+var DefaultRoute = Router.DefaultRoute;
 
 /* Views */
 var Main = require('../views/view-main.jsx');
 
 /* Default Handler */
 var RootDefault = React.createClass({
-	mixins: [Router.State],
+	contextTypes: {
+		router: React.PropTypes.func
+	},
 
 	render: function(){
 		return (
-			<RouterHandler />
+			<Main/>
 		);
 	}
 });
 
 var routes = (
 	<Route handler={RootDefault}>
-		<DefaultRoute name="main" handler={Main} />
+
 	</Route>
 );
 

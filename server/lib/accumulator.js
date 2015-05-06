@@ -17,11 +17,11 @@ var client = new hbase({
 });
 
 var filenameSuffixes = [
-	/*'100505', '100508', '100515', '100522',
+	'100505', '100508', '100515', '100522',
 	'100605', '100612', '100619', '100626',
 	'100703', '100710', '100717', '100724',
 	'100731', '100807', '100814', '100821',
-	'100828',*/ '100904', '100911', '100918',
+	'100828', '100904', '100911', '100918',
 	'100925', '101002', '101009', '101016',
 	'101023', '101030', '101106', '101113',
 	'101120', '101127', '101204', '101211',
@@ -85,7 +85,7 @@ var filenameSuffixes = [
 ];
 
 async.series([
-	/*function(done1) {
+	function(done1) {
 		//Create hbase table
 		client.table('mta_turnstile_data')
 			.create({
@@ -100,7 +100,7 @@ async.series([
 					done1();
 				}
 			});
-	},*/
+	},
 	function(done1) {
 		/**
 		 * Uncomment to view schema after table is created.
@@ -169,6 +169,7 @@ function _fetchData(suffix, success, failure) {
 	var baseUrl = 'http://web.mta.info/developers/data/nyct/turnstile/turnstile_';
 	try {
 		turnstiles(baseUrl + suffix + '.txt', function (data) {
+			console.log('Downloaded file from:', baseUrl+suffix+'.txt');
 			success(data);
 		});
 	} catch(error) {
@@ -185,27 +186,56 @@ function _fetchData(suffix, success, failure) {
  */
 function _dumpFileContentsIntoHBase(suffix, data, callback) {
 	var split = data.split('\n'),
-		count = 1;
+		count = 0,
+		allRows = [];
 
 	split = _.slice(split, 1, split.length-1);
-
+	console.log('Number of lines in file', split.length);
 	async.eachSeries(split, function(row, next) {
 		var rowSplit = row.split(',');
 
-		_saveRow(suffix, rowSplit, function(error) {
-			if(error) {
-				next(error);
-			} else {
-				count++;
-				next();
-			}
+		_constructRow(rowSplit, function(rows) {
+			count = count + rows.length/3;
+			async.series([
+				function(done) {
+					allRows = _.union(allRows, rows);
+					done();
+				},
+				function(done) {
+					if(count % 100 === 0) {
+						_saveRow(suffix, allRows, function(error) {
+							if(error) {
+								done(error);
+							} else {
+								allRows = [];
+								//console.log('Successfully inserted at', count, 'another 100 entries from file:', suffix);
+								done();
+							}
+						});
+					} else {
+						done();
+					}
+				}
+			], function(error) {
+				if(error) {
+					next(error);
+				} else {
+					next();
+				}
+			});
 		});
 	}, function(error) {
 		if(error) {
 			callback(error);
 		} else {
-			console.log('Successfully inserted', count, 'entries from file:', suffix);
-			callback();
+			_saveRow(suffix, allRows, function(error) {
+				if(error) {
+					callback(error);
+				} else {
+					console.log('Successfully inserted', count, 'entries from file:', suffix);
+					callback();
+				}
+			});
 		}
 	});
 }
@@ -213,18 +243,12 @@ function _dumpFileContentsIntoHBase(suffix, data, callback) {
 /**
  * Saving row to hbase
  * @param suffix
- * @param row
+ * @param rows
  * @param callback
  * @private
  */
-function _saveRow(suffix, row, callback) {
-	var table = client.table('mta_turnstile_data'),
-		rowKey = row[0] + '_' + row[4] + '_' + row[5],
-		rows = [
-			{ key: rowKey, column: 'logDetails:description', timestamp: Date.now(), $: row[6] },
-			{ key: rowKey, column: 'logDetails:entries', timestamp: Date.now(), $: row[7] },
-			{ key: rowKey, column: 'logDetails:exits', timestamp: Date.now(), $: row[8] }
-		];
+function _saveRow(suffix, rows, callback) {
+	var table = client.table('mta_turnstile_data');
 
 	table.row()
 		.put(rows, function(error, success){
@@ -232,11 +256,27 @@ function _saveRow(suffix, row, callback) {
 				callback(error);
 			} else {
 				if(success) {
-					console.log('Inserted row', rowKey);
 					callback();
 				} else {
 					callback(new Error('Insert into Hbase failed for file' + suffix));
 				}
 			}
 		});
+}
+
+/**
+ * Construct row to save in hbase
+ * @param row
+ * @param callback
+ * @private
+ */
+function _constructRow(row, callback) {
+	var rowKey = row[0] + '_' + row[4] + '_' + row[5],
+		rows = [
+			{ key: rowKey, column: 'logDetails:description', timestamp: Date.now(), $: row[6] },
+			{ key: rowKey, column: 'logDetails:entries', timestamp: Date.now(), $: row[7] },
+			{ key: rowKey, column: 'logDetails:exits', timestamp: Date.now(), $: row[8] }
+		];
+
+	callback(rows);
 }

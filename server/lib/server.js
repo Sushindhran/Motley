@@ -10,7 +10,8 @@ var path = require('path'),
 	db = require('./db/scripts/db'),
 	middleware = require('./config/express/express-middleware'),
 	routes = require('./config/express/express-routes'),
-	s3Client,
+	log4js = require('log4js'),
+	_ = require('lodash'),
 	server,
 	log;
 
@@ -40,7 +41,7 @@ var runServer = function() {
 
 	//Start listening on localhost
 	exports.listen(port);
-	log.info('Node app listening on port %d', port);
+	settings.log.info('Node app listening on port %d', port);
 };
 
 /**
@@ -52,6 +53,7 @@ async.series([
 		done();
 	},
 	function(done) {
+		log = getLogger();
 		settings.log = log;
 		done();
 	},
@@ -59,15 +61,11 @@ async.series([
 		db.connect(settings.getConfig().dbURL, done, done);
 	},
     function(done) {
-        loginRoute.initPassport(passport);
+        middleware(app, router);
         done();
     },
     function(done) {
-        middleware(app, router, passport);
-        done();
-    },
-    function(done) {
-        routes(router, passport, s3Client);
+        routes(router);
         done();
     },
 	function(done) {
@@ -79,3 +77,22 @@ async.series([
 		log.fatal(error);
 	}
 });
+
+function getLogger() {
+	var config = settings.getConfig(),
+		category = _.get(config, 'logging.appenders[0].category'),
+		type = _.get(config, 'logging.appenders[0].type'),
+		filename;
+
+	if(type === 'file') {
+		var logPath = path.join(__dirname.split('lib')[0], 'logs');
+		if(!fs.existsSync(logPath)) {
+			fs.mkdirSync(logPath);
+		}
+		filename = _.get(config, 'logging.appenders[0].filename', 'production.log');
+		//Set the log file path to the absolute path
+		config.logging.filename = path.join(__dirname.split('lib')[0], filename);
+	}
+	log4js.configure(config.logging, {});
+	return log4js.getLogger(category);
+}
