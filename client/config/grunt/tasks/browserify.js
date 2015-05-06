@@ -8,7 +8,8 @@ module.exports = {
 		files: {
 			'target/scripts/bundle.js': ['src/main/scripts/**/*.js', 'src/main/scripts/**/*.jsx'],
 			'target/scripts/vendor.js': [
-				'node_modules/jquery/dist/jquery.min.js'
+				'node_modules/jquery/dist/jquery.min.js',
+				'src/main/lib/**/*.js'
 			]
 		}
 	}

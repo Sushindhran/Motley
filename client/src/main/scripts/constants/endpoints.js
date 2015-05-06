@@ -9,6 +9,6 @@ module.exports = {
 		URL: '/api/timings'
 	},
 	TRAIN_USAGE: {
-		URL: '/api/trainUsage'
+		URL: '/api/turnstile/:date/:time'
 	}
 };

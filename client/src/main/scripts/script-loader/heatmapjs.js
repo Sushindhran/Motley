@@ -1,12 +1,12 @@
-/*
- * heatmap.js v2.0.0 | JavaScript Heatmap Library
- *
- * Copyright 2008-2014 Patrick Wied <heatmapjs@patrick-wied.at> - All rights reserved.
- * Dual licensed under MIT and Beerware license 
- *
- * :: 2014-08-09 03:12
- */
-;(function(global){
+exports._heatmapjs = function() {
+	/*
+	 * heatmap.js v2.0.0 | JavaScript Heatmap Library
+	 *
+	 * Copyright 2008-2014 Patrick Wied <heatmapjs@patrick-wied.at> - All rights reserved.
+	 * Dual licensed under MIT and Beerware license
+	 *
+	 * :: 2014-08-09 03:12
+	 */
 // Heatmap Config stores default values and will be merged with instance config
 	var HeatmapConfig = {
 		defaultRadius: 40,
@@ -664,7 +664,6 @@
 		};
 
 		return Heatmap;
-
 	})();
 
 
@@ -680,4 +679,4 @@
 
 	global['h337'] = heatmapFactory;
 
-})(this || window);
+}

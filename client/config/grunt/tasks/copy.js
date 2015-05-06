@@ -16,7 +16,15 @@ module.exports = {
 					'**/*'
 				],
 				dest: '<%= buildOutputDirectoryPath %>/resources/images/'
-			}
+			},
+	        {
+		        expand: true,
+		        cwd: '<%= sourceDirectoryPath %>/resources/fonts',
+		        src:[
+			        '**/*'
+		        ],
+		        dest: '<%= buildOutputDirectoryPath %>/resources/fonts/'
+	        }
 		],
 		options: {
 			mode: true
