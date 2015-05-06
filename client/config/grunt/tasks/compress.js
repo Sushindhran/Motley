@@ -1,7 +1,7 @@
 module.exports = {
 	main: {
 		options: {
-			archive: 'Scene-Finder-client.zip',
+			archive: 'House-hunting-application.zip',
 			mode: 'zip'
 		},
 		files: [

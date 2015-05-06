@@ -5,9 +5,11 @@ var Router = require('react-router');
 
 var Route = Router.Route;
 var DefaultRoute = Router.DefaultRoute;
+var RouterHandler = Router.RouteHandler;
 
 /* Views */
 var Main = require('../views/view-main.jsx');
+var Charts = require('../views/view-charts.jsx');
 
 /* Default Handler */
 var RootDefault = React.createClass({
@@ -17,14 +19,15 @@ var RootDefault = React.createClass({
 
 	render: function(){
 		return (
-			<Main/>
+			<RouterHandler/>
 		);
 	}
 });
 
 var routes = (
 	<Route handler={RootDefault}>
-
+		<DefaultRoute handler={Main}/>
+		<Route path="/charts" name="charts" handler={Charts}/>
 	</Route>
 );
 

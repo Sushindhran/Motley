@@ -108,15 +108,3 @@ function _consolidateForOneStation(arr, callback) {
 		callback(arr);
 	}
 }
-
-/*
- * List of analytics
- * 1) Train color wise
- * 2) Complete visualization
- * 3) Month wise average metrics / year
- * 4) Day wise average metric / year
- * 5) Yearly average history
- * 6) Peak Hour-wise weekday
- * 7) Hour-wise weekend.
- * 7) Rating
- */
