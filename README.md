@@ -1,6 +1,10 @@
 House Hunting Application
 =========================
 
+The client is running on http://52.7.23.143/#/
+
+Everything else here is for Development or running the client locally.
+
 Web application that enables one to search for houses with the help of
 
 1) Zillow Estimate API
@@ -42,6 +46,8 @@ Server
 
 ### Setup
 
+This is a node.js project. All the relevant code is in server/lib.
+
 1) npm install
 
 2) Before you start off, ensure that you have execute permissions on app.sh
@@ -57,3 +63,12 @@ Server
 5) To accumulate turnstile data, parse it and store it in mongodb
 
 	grunt accumulate
+
+
+You need HBase installed and you need to start the HBase REST server in order to first accumulate the MTA turnstile data.
+
+To accumulate data, run node lib/accumulator.js from /server
+
+Run all the other files - runDayWiseAv.js, runMonthWiseAv.js, saveStations.js, saveToMongo.js and you will have all the analytics in mongodb.
+
+Please see attached screenshots for proof of working code.

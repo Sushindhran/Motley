@@ -34,7 +34,7 @@ var Main = React.createClass({
 
 		var dateSplit = momentObj.toString().split(' ');
 		date = dateSplit[0];
-		time=dateSplit[1];
+		time = dateSplit[1];
 
 		serviceTurnstile.getCaptionResponse(date, time).then(
 			function(response) {
