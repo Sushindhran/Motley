@@ -1,6 +1,5 @@
 var React = require('react');
-
-var _ = require('lodash')
+var _ = require('lodash');
 var async = require('async');
 var moment = require('moment');
 var DatePicker = require('react-bootstrap-datetimepicker');

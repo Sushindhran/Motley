@@ -21,6 +21,56 @@ Schemas.turnstileData = new Schema({
 	exits: Number
 });
 
+Schemas.trainColorWise = new Schema({
+	trainColor: String,
+	line: String,
+	date: Date,
+	entries: Number,
+	exits: Number
+});
+
+Schemas.monthWiseAverage = new Schema({
+	remote: String,
+	month: String,
+	year: String,
+	entries: Number,
+	exits: Number
+});
+
+Schemas.yearWiseAverage = new Schema({
+	remote: String,
+	year: String,
+	entries: Number,
+	exits: Number
+});
+
+Schemas.dayWiseAverage = new Schema({
+	remote: String,
+	day: String,
+	month: String,
+	year: String,
+	entries: Number,
+	exits: Number
+});
+
+//Hours 8-10
+Schemas.peakHourWeekdayAverage = new Schema({
+	remote: String,
+	month: String,
+	year: String,
+	entries: String,
+	exits: String
+});
+
+//Evening Hours 5-7
+Schemas.eveningHourWeekdayAverage = new Schema({
+	remote: String,
+	month: String,
+	year: String,
+	entries: String,
+	exits: String
+});
+
 Schemas.turnstileData.index({remote: 1, date: 1, time: 1});
 
 exports.Schemas = Schemas;

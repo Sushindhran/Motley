@@ -19,6 +19,7 @@ exports.connect = function(url, success, failure) {
 				failure(new Error(error));
 			}
 		} else {
+			console.log('Connected to mongo');
 			success();
 		}
 	});
