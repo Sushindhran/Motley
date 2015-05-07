@@ -15,6 +15,6 @@ module.exports = {
 		URL: '/api/stations'
 	},
 	ANALYTICS: {
-		URL: '/api/station/:station/monthlyAv'
+		URL: '/api/analytics/:analytic/:station'
 	}
 };

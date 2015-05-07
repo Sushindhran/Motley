@@ -2,6 +2,8 @@
 
 var async = require('async'),
 	turnstileService = require('../services/service-turnstile'),
+	monthwiseModel = require('../db/models/model-monthwise-av').Model,
+	yearwiseModel = require('../db/models/model-yearwise-av').Model,
 	settings = require('../config/app/settings');
 
 /*
@@ -25,12 +27,14 @@ exports.getDataForAnalytic = function(req, res) {
 			break;
 
 		case 'avmonth':
+			_monthWiseAv(res, station);
 			break;
 
 		case 'avday':
 			break;
 
 		case 'avyear':
+			_yearWiseAv(res, station);
 			break;
 
 		case 'peakweekday':
@@ -57,3 +61,29 @@ exports.getDataByTimeAndDate = function(req, res) {
 		res.end();
 	});
 };
+
+function _monthWiseAv(res, station) {
+	new monthwiseModel().retrieve({remote: station}, function(docs) {
+		res.send(docs);
+		res.end();
+	}, function(error) {
+		if (error) {
+			settings.log.fatal(error.message);
+			res.status(500).send({message: 'Internal Server Error'});
+		}
+		res.end();
+	});
+}
+
+function _yearWiseAv(res, station) {
+	new yearwiseModel().retrieve({remote: station}, function(docs) {
+		res.send(docs);
+		res.end();
+	}, function(error) {
+		if (error) {
+			settings.log.fatal(error.message);
+			res.status(500).send({message: 'Internal Server Error'});
+		}
+		res.end();
+	});
+}

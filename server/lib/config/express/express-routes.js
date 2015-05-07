@@ -3,6 +3,7 @@
 var routeHealthcheck = require('../../routes/route-diagnostics'),
 	routeTurnstile = require('../../routes/route-turnstile'),
 	routeStations = require('../../routes/route-stations'),
+	routeAnalytics = require('../../routes/route-analytics'),
 	settings = require('../app/settings');
 
 module.exports = function(router) {
@@ -11,8 +12,11 @@ module.exports = function(router) {
 		.get(routeHealthcheck.healthCheck);
 
 	router.route('/turnstile/:date/:time')
-		.get(routeTurnstile.getDataByTimeAndDate)
+		.get(routeTurnstile.getDataByTimeAndDate);
 
 	router.route('/stations')
-		.get(routeStations.getDataByTimeAndDate)
+		.get(routeStations.getDataByTimeAndDate);
+
+	router.route('/analytics/:analytic/:station')
+		.get(routeAnalytics.getDataForAnalytic)
 };

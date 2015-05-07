@@ -4,7 +4,8 @@ var Reflux = require('reflux');
 
 var MapActions = Reflux.createActions([
 	'newData',
-	'saveStation'
+	'saveStation',
+	'newAnalytic'
 ]);
 
 module.exports = MapActions;

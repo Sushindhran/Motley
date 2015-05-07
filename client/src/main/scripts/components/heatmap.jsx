@@ -45,7 +45,6 @@ var HeatMap = React.createClass({
 	},
 
 	onNewData: function() {
-		console.log('newData', storeMap.getData());
 		this.onScriptLoaded(storeMap.getData());
 	},
 

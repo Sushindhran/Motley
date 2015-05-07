@@ -1,47 +1,139 @@
 var LineChart = require("react-chartjs").Line;
 var React = require('react');
-
+var Reflux = require('reflux');
+var _ = require('lodash');
 var storeMap = require('../stores/store-map');
+var actionMap = require('../actions/action-map');
+var storeAn = require('../stores/store-an');
+var actionAn = require('../actions/action-an');
+var serviceAnalytics = require('../services/svc-analytics');
+
+var _station;
+var _response;
+
+var _data = {
+	labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+	datasets: [
+		{
+			label: "My First dataset",
+			fillColor: "rgba(220,220,220,0.2)",
+			strokeColor: "rgba(220,220,220,1)",
+			pointColor: "rgba(220,220,220,1)",
+			pointStrokeColor: "#fff",
+			pointHighlightFill: "#fff",
+			pointHighlightStroke: "rgba(220,220,220,1)",
+			data: [65, 59, 80, 81, 56, 55, 40]
+		},
+		{
+			label: "My Second dataset",
+			fillColor: "rgba(151,187,205,0.2)",
+			strokeColor: "rgba(151,187,205,1)",
+			pointColor: "rgba(151,187,205,1)",
+			pointStrokeColor: "#fff",
+			pointHighlightFill: "#fff",
+			pointHighlightStroke: "rgba(151,187,205,1)",
+			data: [28, 48, 40, 19, 86, 27, 90]
+		}
+	]
+};
 
 var LC = React.createClass({
+	mixins: [
+		Reflux.listenTo(storeMap, 'onNewAnalytic'),
+		Reflux.listenTo(storeAn, 'onAnalyticTypeChange')
+	],
+
 	getInitialState: function() {
 		return {
-			station: storeMap.getStation()
+			station: storeMap.getStation(),
+			data: {
+				labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+				datasets: []
+			},
+			year: '2010',
+			analytic: 'avmonth',
+			type: 'entries'
 		};
 	},
 
 	componentWillMount: function() {
+		if(this.state.station) {
+			_station = this.state.station;
 
+			serviceAnalytics.getAnalytics(this.state.analytic, _station).then(
+				function(data) {
+					_response = data;
+					_formatData(this.state.analytic, data, this.state.type, function(error, d) {
+						actionMap.newAnalytic(d);
+					}.bind(this));
+				}.bind(this),
+				function(error) {
+
+				}
+			);
+		}
+	},
+
+	onNewAnalytic: function() {
+		var analytic = storeMap.getAnalytic();
+		this.setState({
+			data: analytic
+		});
+	},
+
+	onTypeChange: function(ev) {
+		this.setState({
+			type: ev.target.value
+		});
+		_formatData(this.state.analytic, _response, ev.target.value, function(error, d) {
+			actionMap.newAnalytic(d);
+		}.bind(this));
+	},
+
+	onAnalyticChange: function(ev) {
+		this.setState({
+			data: {datasets: [ {}, {} ]},
+			analytic: ev.target.value
+		});
+		actionAn.type(ev.target.value);
+	},
+
+	onAnalyticTypeChange: function() {
+		var type = storeAn.getType();
+		serviceAnalytics.getAnalytics(type, _station).then(
+			function (data) {
+				_response = data;
+				_formatData(type, _response, this.state.type, function(error, d) {
+					actionMap.newAnalytic(d);
+				}.bind(this));
+			}.bind(this),
+			function(error) {
+
+			}
+		);
+	},
+
+	stationChange: function(ev) {
+		_station = ev.target.value || _station;
+		serviceAnalytics.getAnalytics(this.state.analytic, _station).then(
+			function (data) {
+				_response = data;
+				_formatData(this.state.analytic, data, this.state.type, function (error, d) {
+					actionMap.newAnalytic(d);
+				}.bind(this));
+			}.bind(this),
+			function(error) {
+
+			}
+		);
 	},
 
 	render: function() {
-		var data = {
-			labels: ["January", "February", "March", "April", "May", "June", "July"],
-			datasets: [
-				{
-					label: "My First dataset",
-					fillColor: "rgba(220,220,220,0.2)",
-					strokeColor: "rgba(220,220,220,1)",
-					pointColor: "rgba(220,220,220,1)",
-					pointStrokeColor: "#fff",
-					pointHighlightFill: "#fff",
-					pointHighlightStroke: "rgba(220,220,220,1)",
-					data: [65, 59, 80, 81, 56, 55, 40]
-				},
-				{
-					label: "My Second dataset",
-					fillColor: "rgba(151,187,205,0.2)",
-					strokeColor: "rgba(151,187,205,1)",
-					pointColor: "rgba(151,187,205,1)",
-					pointStrokeColor: "#fff",
-					pointHighlightFill: "#fff",
-					pointHighlightStroke: "rgba(151,187,205,1)",
-					data: [28, 48, 40, 19, 86, 27, 90]
-				}
-			]
-		};
-
 		var options = {
+			animation: true,
+
+			// Number - Number of animation steps
+			animationSteps: 5,
 
 			///Boolean - Whether grid lines are shown across the chart
 			scaleShowGridLines : true,
@@ -50,7 +142,7 @@ var LC = React.createClass({
 			scaleGridLineColor : "rgba(0,0,0,.05)",
 
 			//Number - Width of the grid lines
-			scaleGridLineWidth : 1,
+			scaleGridLineWidth : 3,
 
 			//Boolean - Whether to show horizontal lines (except X axis)
 			scaleShowHorizontalLines: true,
@@ -82,29 +174,82 @@ var LC = React.createClass({
 			//Number - Pixel width of dataset stroke
 			datasetStrokeWidth : 2,
 
-			//Boolean - Whether to fill the dataset with a colour
-			datasetFill : true,
-
 			//String - A legend template
 			legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
 
 		};
 
-		return (
-			<div className="container-fluid">
-				<div className="col-md-3">
-					<div className="row">
-						<select className="col-md-8 select" ref="station" size="10" onChange={this.stationChange}>{options1}</select>
+		if(this.state.data.datasets.length > 0) {
+			console.log('Here');
+			return (
+				<div className="container-fluid">
+					<div className="col-md-3">
+						<div className="row">
+							<div>Choose Train Station</div>
+							<select className="col-md-8 select" size="25" onChange={this.stationChange}>{options1}</select>
+						</div>
+						<div className="row">
+							<div>Choose Type</div>
+							<select className="col-md-8 select" onChange={this.onTypeChange}>
+								<option value="entries">Entries</option>
+								<option value="exits">Exits</option>
+							</select>
+						</div>
+						<div className="row">
+							<div>Choose Analytic</div>
+							<select className="col-md-8 select" onChange={this.onAnalyticChange}>
+								<option value="avmonth">Monthly Average</option>
+								<option value="avyear">Yearly Average</option>
+								<option value="trainusage">Train Usage</option>
+								<option value="dailyusage">Day Wise Average</option>
+								<option value="morningpeak">Day Peak Hours</option>
+								<option value="eveningpeak">Evening Peak Hours</option>
+							</select>
+						</div>
 					</div>
-					<div className="row">
-
+					<div className="col-md-9">
+						<div>
+							<b>{this.state.analytic}</b> - All values in millions
+						</div>
+						<div>
+							<LineChart data={this.state.data} options={options} width="800" height="750"/>
+						</div>
 					</div>
 				</div>
-				<div className="col-md-9">
-					<LineChart data={data} options={options} width="600" height="250"/>
+			);
+		} else {
+			return (
+				<div className="container-fluid">
+					<div className="col-md-3">
+						<div className="row">
+							<div>Choose Train Station</div>
+							<select className="col-md-8 select" size="25" onChange={this.stationChange}>{options1}</select>
+						</div>
+						<div className="row">
+							<div>Choose Type</div>
+							<select className="col-md-8 select" onChange={this.onTypeChange}>
+								<option value="entries">Entries</option>
+								<option value="exits">Exits</option>
+							</select>
+						</div>
+						<div className="row">
+							<div>Choose Analytic</div>
+							<select className="col-md-8 select" onChange={this.onAnalyticChange}>
+								<option value="avmonth">Monthly Average</option>
+								<option value="avyear">Yearly Average</option>
+								<option value="trainusage">Train Usage</option>
+								<option value="dailyusage">Day Wise Average</option>
+								<option value="morningpeak">Day Peak Hours</option>
+								<option value="eveningpeak">Evening Peak Hours</option>
+							</select>
+						</div>
+					</div>
+					<div className="col-md-9">
+						No data for chart
+					</div>
 				</div>
-			</div>
-		);
+			);
+		}
 	}
 });
 
@@ -590,5 +735,158 @@ var options1 = [
 	<option value="R551">GROVE STREET </option>,
 	<option value="R552">JOURNAL SQUARE </option>
 ];
+
+
+function _formatData(analytic, data, type, callback) {
+	var _dataSets = [];
+
+	console.log(analytic);
+
+	switch(analytic) {
+		case 'avmonth': _monthlyAv(_dataSets, data, type, callback);
+			break;
+
+		case 'avyear': _yearlyAv(_dataSets, data, type, callback);
+			break;
+	}
+}
+
+function _monthlyAv(_dataSets, data, type, callback) {
+	for(var i=0; i<6;i++) {
+		_dataSets.push({
+			pointStrokeColor: "#fff",
+			pointHighlightFill: "#fff",
+			data: [0,0,0,0,0,0,0,0,0,0,0,0]
+		});
+	}
+	require('async').eachSeries(data, function(d, next) {
+		switch(d.year) {
+			case '2010':
+				_dataSets[0].label = "2010";
+				_dataSets[0].fillColor = "rgba(220,220,220,0.1)";
+				_dataSets[0].strokeColor = "rgba(220,220,220,1)";
+				_dataSets[0].pointColor = "rgba(220,220,220,1)";
+				_dataSets[0].data[Number(d.month)-1] = Math.abs(d[type]/30000000);
+				next();
+				break;
+
+			case '2011':
+				_dataSets[1].label = "2011";
+				_dataSets[1].fillColor =  "rgba(255,255,0,0.1)";
+				_dataSets[1].strokeColor = "rgba(255,255,0,1)";
+				_dataSets[1].pointColor = "rgba(255,255,0,1)";
+				_dataSets[1].data[Number(d.month)-1] = Math.abs(d[type]/30000000);
+				next();
+				break;
+
+			case '2012':
+				_dataSets[2].label = "2012";
+				_dataSets[2].fillColor =  "rgba(255,102,0,0.1)";
+				_dataSets[2].strokeColor = "rgba(255,102,0,1)";
+				_dataSets[2].pointColor = "rgba(255,102,0,1)";
+				_dataSets[2].data[Number(d.month)-1] = Math.abs(d[type]/30000000);
+				next();
+				break;
+
+			case '2013':
+				_dataSets[3].label = "2013";
+				_dataSets[3].fillColor =  "rgba(75,75,255,0.1)";
+				_dataSets[3].strokeColor = "rgba(75,75,255,1)";
+				_dataSets[3].pointColor = "rgba(75,75,255,1)";
+				_dataSets[3].data[Number(d.month)-1] = Math.abs(d[type]/30000000);
+				next();
+				break;
+
+			case '2014':
+				_dataSets[4].label = "2014";
+				_dataSets[4].fillColor =  "rgba(75,255,75,0.1)";
+				_dataSets[4].strokeColor = "rgba(75,255,75,1)";
+				_dataSets[4].pointColor = "rgba(75,255,75,1)";
+				_dataSets[4].data[Number(d.month)-1] = Math.abs(d[type]/30000000);
+				next();
+				break;
+
+			case '2015':
+				_dataSets[5].label = "2015";
+				_dataSets[5].fillColor =  "rgba(255,75,75,0.1)";
+				_dataSets[5].strokeColor = "rgba(255,75,75,1)";
+				_dataSets[5].pointColor = "rgba(255,75,75,1)";
+				_dataSets[5].data[Number(d.month)-1] = Math.abs(d[type]/30000000);
+				next();
+				break;
+
+			default: next();
+		}
+	}, function(error) {
+		if(error) {
+			callback(error);
+		} else {
+			_data = {
+				labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+				datasets: _dataSets
+			};
+			callback(null, _data);
+		}
+	});
+}
+
+function _yearlyAv(_dataSets, data, type, callback) {
+	for(var i=0; i<1;i++) {
+		_dataSets.push({
+			pointStrokeColor: "#fff",
+			pointHighlightFill: "#fff",
+			data: [0,0,0,0,0,0]
+		});
+	}
+	require('async').eachSeries(data, function(d, next) {
+		_dataSets[0].label = "Yearly Average";
+		_dataSets[0].fillColor = "rgba(220,220,220,0.1)";
+		_dataSets[0].strokeColor = "rgba(220,220,220,1)";
+		_dataSets[0].pointColor = "rgba(220,220,220,1)";
+		switch(d.year) {
+			case '2010':
+				_dataSets[0].data[0] = Math.abs(d[type]/12000000);
+				next();
+				break;
+
+			case '2011':
+				_dataSets[0].data[1] = Math.abs(d[type]/12000000);
+				next();
+				break;
+
+			case '2012':
+				_dataSets[0].data[2] = Math.abs(d[type]/12000000);
+				next();
+				break;
+
+			case '2013':
+				_dataSets[0].data[3] = Math.abs(d[type]/12000000);
+				next();
+				break;
+
+			case '2014':
+				_dataSets[0].data[4] = Math.abs(d[type]/12000000);
+				next();
+				break;
+
+			case '2015':
+				_dataSets[0].data[5] = Math.abs(d[type]/12000000);
+				next();
+				break;
+
+			default: next();
+		}
+	}, function(error) {
+		if(error) {
+			callback(error);
+		} else {
+			_data = {
+				labels: ["2010", "2011", "2012", "2013", "2014", "2015"],
+				datasets: _dataSets
+			};
+			callback(null, _data);
+		}
+	});
+}
 
 module.exports = LC;

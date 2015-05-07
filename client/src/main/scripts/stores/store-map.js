@@ -6,6 +6,7 @@ var mapActions = require('../actions/action-map');
 
 var _data;
 var _station;
+var _analytic;
 
 var MapStore = Reflux.createStore({
 
@@ -20,12 +21,21 @@ var MapStore = Reflux.createStore({
 		_station = station;
 	},
 
+	onNewAnalytic: function(analytic) {
+		_analytic = analytic;
+		this.trigger();
+	},
+
 	getData: function() {
 		return _data;
 	},
 
 	getStation: function() {
 		return _station;
+	},
+
+	getAnalytic: function() {
+		return _analytic;
 	}
 });
 

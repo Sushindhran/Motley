@@ -63,7 +63,7 @@ This is a node.js project. All the relevant code is in server/lib.
 5) To accumulate turnstile data, parse it and store it in mongodb
 
 	grunt accumulate
-
+a
 
 You need HBase installed and you need to start the HBase REST server in order to first accumulate the MTA turnstile data.
 

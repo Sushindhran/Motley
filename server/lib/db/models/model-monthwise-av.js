@@ -14,7 +14,7 @@ var _ = require('lodash'),
  */
 function MonthwiseAvModel() {
 	MonthwiseAvModel.super_.call(this);
-	MonthwiseAvModel.prototype.init('monthwiseAv', monthwiseAvSchema, 'monthwiseAv');
+	MonthwiseAvModel.prototype.init('monthwiseAv', monthwiseAvSchema);
 }
 
 util.inherits(MonthwiseAvModel, baseModel.Model);
