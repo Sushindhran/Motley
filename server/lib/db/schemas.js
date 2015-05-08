@@ -12,6 +12,15 @@ Schemas.station = new Schema({
 	station: String
 });
 
+Schemas.trainUsage = new Schema({
+	train: String,
+	remote: String,
+	date: Date,
+	time: String,
+	entries: Number,
+	exits: Number
+});
+
 Schemas.turnstileData = new Schema({
 	remote: String,
 	date: Date,
@@ -53,18 +62,20 @@ Schemas.dayWiseAverage = new Schema({
 	exits: Number
 });
 
-//Hours 8-10
+//Hours 7-10
 Schemas.peakHourWeekdayAverage = new Schema({
 	remote: String,
+	day: String,
 	month: String,
 	year: String,
 	entries: String,
 	exits: String
 });
 
-//Evening Hours 5-7
+//Evening Hours 5-8
 Schemas.eveningHourWeekdayAverage = new Schema({
 	remote: String,
+	day: String,
 	month: String,
 	year: String,
 	entries: String,

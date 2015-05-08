@@ -11,7 +11,6 @@ var AnalyStore = Reflux.createStore({
 	listenables: analyticActions,
 
 	onType: function(type) {
-		console.log('Type', type);
 		_analyType =type;
 		this.trigger();
 	},

@@ -68,6 +68,17 @@ turnstileModel.bulkInsert = function(arr, success, failure) {
 	}.bind(this));
 };
 
+turnstileModel.selectiveRetrieve = function(conditions, options, success, failure) {
+	this.mongooseModel.find(conditions).skip(options.skip).limit(options.limit).exec(function(err, docs) {
+		if(err) {
+			failure('Retrieve: Attempt to find documents for specified conditions failed: ' + err);
+		} else {
+			console.log(docs.length);
+			success(docs);
+		}
+	});
+};
+
 function _cleanArr(arr, callback) {
 	async.each(arr,
 		function(a, next) {

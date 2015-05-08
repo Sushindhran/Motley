@@ -79,8 +79,11 @@ var Main = React.createClass({
 			<div className="container-fluid">
 				<div className="col-md-3">
 					<div className="row">
-						Data available from dates June 2010 - April 2015. Try these dates only.
-						Click ok twice the first time. Apologize for the bug!
+						Data available from dates June 2010 - April 2015.
+						Try these dates only.
+						Click Go twice to update the map. Apologies for the bug!
+
+						Click Go after selecting entries/exits
 					</div>
 					<div className="row">
 						<span className="col-md-6">
@@ -92,16 +95,18 @@ var Main = React.createClass({
 								onChange={this.dateChange}
 							/>
 						</span>
-						<select className="col-md-2 select" ref="type" onChange={this.typeChange}>
-							<option value="entries">entries</option>
-							<option value="exits">exits</option>
-						</select>
 						<span className="col-md-2">
 							<button className="btn btn-primary" onClick={this.getTurnstileData}>   GO    </button>
 						</span>
 					</div>
 					<div className="row">
-						<button className="btn btn-primary" onClick={this.changePage}> View Charts </button>
+						<select className="select" ref="type" onChange={this.typeChange}>
+							<option value="entries">entries</option>
+							<option value="exits">exits</option>
+						</select>
+					</div>
+					<div className="row">
+						<button className="btn btn-primary" onClick={this.changePage}> Click to see some Numbers </button>
 					</div>
 					<br/>
 				</div>

@@ -13,7 +13,9 @@ body {
 }
 
 .select {
-  height: 35px;
+  padding: 10px;
+  height: 75px;
+  width: 250px;
 }
 
 .map {
@@ -64,5 +66,24 @@ body {
 }
 
 .row {
-  padding-top: 50px;
+  padding-top: 30px;
+}
+
+ul {
+  margin: 20px;
+  list-style:none;
+}
+
+.input-color {
+  position: relative;
+}
+
+.input-color .color-box {
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  background-color: #ccc;
+  position: absolute;
+  left: 5px;
+  top: 5px;
 }
