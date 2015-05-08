@@ -18,5 +18,8 @@ module.exports = function(router) {
 		.get(routeStations.getDataByTimeAndDate);
 
 	router.route('/analytics/:analytic/:station')
-		.get(routeAnalytics.getDataForAnalytic)
+		.get(routeAnalytics.getDataForAnalytic);
+
+	router.route('/analytics/usage/:analytic/:train')
+		.get(routeAnalytics.getUsageAnalytic);
 };

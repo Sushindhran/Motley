@@ -16,5 +16,8 @@ module.exports = {
 	},
 	ANALYTICS: {
 		URL: '/api/analytics/:analytic/:station'
+	},
+	USAGE: {
+		URL: '/api/analytics/usage/:analytic/:train'
 	}
 };

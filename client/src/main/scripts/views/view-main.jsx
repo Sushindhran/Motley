@@ -74,6 +74,11 @@ var Main = React.createClass({
 		this.transitionTo('charts');
 	},
 
+	changeToTrainPage: function() {
+		actionMap.saveStation(_station);
+		this.transitionTo('usage');
+	},
+
 	render: function() {
 		return (
 			<div className="container-fluid">
@@ -106,7 +111,10 @@ var Main = React.createClass({
 						</select>
 					</div>
 					<div className="row">
-						<button className="btn btn-primary" onClick={this.changePage}> Click to see some Numbers </button>
+						<button className="btn btn-primary" onClick={this.changePage}> Click to see Station-wise data </button>
+					</div>
+					<div className="row">
+						<button className="btn btn-primary" onClick={this.changeToTrainPage}> Click to see Train-wise data </button>
 					</div>
 					<br/>
 				</div>

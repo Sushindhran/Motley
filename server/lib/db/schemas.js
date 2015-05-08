@@ -82,6 +82,51 @@ Schemas.eveningHourWeekdayAverage = new Schema({
 	exits: String
 });
 
+Schemas.monthWiseUsageAverage = new Schema({
+	train: String,
+	month: String,
+	year: String,
+	entries: Number,
+	exits: Number
+});
+
+Schemas.yearWiseUsageAverage = new Schema({
+	train: String,
+	year: String,
+	entries: Number,
+	exits: Number
+});
+
+Schemas.dayWiseUsageAverage = new Schema({
+	train: String,
+	day: String,
+	month: String,
+	year: String,
+	entries: Number,
+	exits: Number
+});
+
+//Hours 7-10
+Schemas.peakHourWeekdayUsageAverage = new Schema({
+	train: String,
+	day: String,
+	month: String,
+	year: String,
+	entries: String,
+	exits: String
+});
+
+//Evening Hours 5-8
+Schemas.eveningHourWeekdayUsageAverage = new Schema({
+	train: String,
+	day: String,
+	month: String,
+	year: String,
+	entries: String,
+	exits: String
+});
+
 Schemas.turnstileData.index({remote: 1, date: 1, time: 1});
+Schemas.trainUsage.index({train: 1, date: 1, time: 1});
 
 exports.Schemas = Schemas;

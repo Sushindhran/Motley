@@ -10,6 +10,7 @@ var RouterHandler = Router.RouteHandler;
 /* Views */
 var Main = require('../views/view-main.jsx');
 var Charts = require('../views/view-charts.jsx');
+var Usage = require('../views/view-usage.jsx');
 
 /* Default Handler */
 var RootDefault = React.createClass({
@@ -28,6 +29,7 @@ var routes = (
 	<Route handler={RootDefault}>
 		<DefaultRoute handler={Main}/>
 		<Route path="/charts" name="charts" handler={Charts}/>
+		<Route path="/usage" name="usage" handler={Usage}/>
 	</Route>
 );
 
