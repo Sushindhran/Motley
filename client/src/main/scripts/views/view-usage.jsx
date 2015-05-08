@@ -201,7 +201,7 @@ var LC = React.createClass({
 			desc = 'Daywise average per month for '+_year;
 		} else if(this.state.analytic === 'peakweekdayUsage') {
 			yearClass = 'row';
-			desc = 'Peak day hours (7-10pm) average/mo for '+_year;
+			desc = 'Peak day hours (7-10am) average/mo for '+_year;
 		}else if(this.state.analytic === 'peakeveusage') {
 			yearClass = 'row';
 			desc = 'Peak evening hours (5-8pm) average/mo for '+_year;
@@ -429,7 +429,7 @@ function _formatData(analytic, data, type, callback) {
 		case 'avdayusage': _dailyAv(_dataSets, data, type, _year, callback);
 			break;
 
-		case 'peakweekdayusage': _dailyAv(_dataSets, data, type, _year, callback);
+		case 'peakweekdayUsage': _dailyAv(_dataSets, data, type, _year, callback);
 			break;
 
 		case 'peakeveusage': _dailyAv(_dataSets, data, type, _year, callback);

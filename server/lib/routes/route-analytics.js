@@ -9,7 +9,9 @@ var async = require('async'),
 	daywiseModel = require('../db/models/model-daywise-av').Model,
 	daywiseUsageModel = require('../db/models/model-daywise-usage-av').Model,
 	peakDayModel = require('../db/models/model-peakDay-av').Model,
+	peakDayUsageModel = require('../db/models/model-peakDay-usage-av').Model,
 	peakEveModel = require('../db/models/model-peakEve-av').Model,
+	peakEveUsageModel = require('../db/models/model-peakEve-usage-av').Model,
 	settings = require('../config/app/settings');
 
 /*
@@ -73,12 +75,12 @@ exports.getUsageAnalytic = function(req, res) {
 			_yearWiseAvUsage(res, train);
 			break;
 
-		case 'peakweekdayusage':
+		case 'peakweekdayUsage':
 			_peakWeekDayUsage(res, train);
 			break;
 
 		case 'peakeveusage':
-			//_peakEve(res, train);
+			_peakEveUsage(res, train);
 			break;
 	}
 };
@@ -206,7 +208,7 @@ function _dayWiseAvUssage(res, train) {
 }
 
 function _peakWeekDayUsage(res, train) {
-	new peakDayModel().retrieve({train: train}, function(docs) {
+	new peakDayUsageModel().retrieve({train: train}, function(docs) {
 		res.send(docs);
 		res.end();
 	}, function(error) {
@@ -218,8 +220,8 @@ function _peakWeekDayUsage(res, train) {
 	});
 }
 
-function _peakEve(res, train) {
-	new peakEveModel().retrieve({train: train}, function(docs) {
+function _peakEveUsage(res, train) {
+	new peakEveUsageModel().retrieve({train: train}, function(docs) {
 		res.send(docs);
 		res.end();
 	}, function(error) {
