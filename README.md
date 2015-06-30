@@ -1,16 +1,5 @@
-House Hunting Application
+MTA Turnstile Data Analysis
 =========================
-
-The client is running on http://52.7.23.143/#/
-
-Everything else here is for Development or running the client locally.
-
-Web application that enables one to search for houses with the help of
-
-1) Zillow Estimate API
-2) MTA realtime train timings
-3) MTA turnstile data
-4) NYC crime data
 
 Client
 ------
@@ -70,5 +59,3 @@ You need HBase installed and you need to start the HBase REST server in order to
 To accumulate data, run node lib/accumulator.js from /server
 
 Run all the other files - runDayWiseAv.js, runMonthWiseAv.js, saveStations.js, saveToMongo.js and you will have all the analytics in mongodb.
-
-Please see attached screenshots for proof of working code.
